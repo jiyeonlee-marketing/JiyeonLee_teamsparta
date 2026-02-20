@@ -11,7 +11,7 @@
 import sys
 from config import Config
 from modules.sheets_capture import render_table_to_bytes
-from modules.ideation import get_weekly_theme, format_ideation_block
+from modules.ideation import fetch_industry_news, format_ideation_block
 from modules.slack_sender import send_morning_briefing
 
 
@@ -32,11 +32,11 @@ def main() -> None:
         print(f"      [WARN] 시트 이미지 생성 실패 (스킵): {e}")
         sheet_image = None
 
-    # 2. 이번 주 KDT 아이데이션 테마
-    print("[2/3] 이번 주 아이데이션 테마 로드 중...")
-    theme = get_weekly_theme()
-    ideation_text = format_ideation_block(theme)
-    print(f"      → 테마: {theme.theme}")
+    # 2. KDT 업계 현황 뉴스 수집
+    print("[2/3] 업계 뉴스 RSS 수집 중...")
+    articles = fetch_industry_news()
+    ideation_text = format_ideation_block(articles)
+    print(f"      → 기사 {len(articles)}건 수집 완료")
 
     # 3. Slack 발송
     print("[3/3] Slack 발송 중...")
